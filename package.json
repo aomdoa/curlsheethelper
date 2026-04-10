@@ -1,0 +1,14 @@
+{
+  "name": "curlsheethelper",
+  "version": "1.0.0",
+  "description": "Provides basic service to help generate game schedule and teams",
+  "repository": "git@github.com:aomdoa/curlsheethelper.git",
+  "author": "David Shurgold <aomdoa@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
