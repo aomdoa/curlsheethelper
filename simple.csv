@@ -1,0 +1,20 @@
+number sheets,6
+number games,21
+teams change,7
+id,experience,wanted position,won't position,must be with,shouldn't be with,can't be with
+a01,1,,vice skip,d01
+a02,1,,vice skip
+a03,1,,vice skip
+a04,1,,vice skip
+b01,3,skip,,,b02
+b02,3,lead,vice skip,,b01,
+b03,3,lead,skip,,,
+b04,3,lead second,skip,,,
+c01,4,second vice,,,,
+c02,4,vice skip,lead,,,
+c03,4,vice skip,,,,
+c04,4,vice skip,lead second,,,
+d01,8,skip,lead,a01,,d02
+d02,8,skip,lead second vice,,,d01
+d03,8,skip vice,,,,
+d04,8,,,,,
