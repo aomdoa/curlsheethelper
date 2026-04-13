@@ -7,7 +7,6 @@ import type { APIGatewayProxyEventV2 } from 'aws-lambda'
 
 const app = express()
 app.use(express.json())
-
 app.all('{*path}', async (req, res) => {
   const body = req.body && Object.keys(req.body).length > 0 ? JSON.stringify(req.body) : undefined
 

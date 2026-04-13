@@ -2,6 +2,8 @@
  * @copyright 2026 David Shurgold <aomdoa@gmail.com>
  */
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
+import processCsv, { RawCurlConfig } from './process'
+import { error } from 'node:console'
 
 function response(statusCode: number, body: unknown): APIGatewayProxyResultV2 {
   return {
@@ -9,7 +11,7 @@ function response(statusCode: number, body: unknown): APIGatewayProxyResultV2 {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
     body: JSON.stringify(body),
@@ -27,18 +29,20 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
   }
 
   const path = event.rawPath
-  const body = event.body
-    ? JSON.parse(event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString() : event.body)
-    : {}
-
-  console.dir(event)
-  console.dir(path)
-  console.dir(body)
+  if (path !== '/process') {
+    return response(404, { message: 'Not Found' })
+  }
+  if (event.body === undefined) {
+    return response(400, { message: 'Missing request body' })
+  }
 
   try {
-    return response(200, { message: 'data will go here' })
+    const body = JSON.parse(event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString() : event.body) as RawCurlConfig
+    const result = processCsv(body)
+    return response(200, { result, message: 'data will go here' })
   } catch (err) {
-    console.dir(err)
-    return response(500, { message: 'Internal Server Error' })
+    const error = err as Error
+    console.dir(error)
+    return response(400, { message: error.message})
   }
 }

@@ -7,8 +7,15 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "clean": "yarn workspaces run clean",
+    "dev": "yarn workspace @curlsheethelper/backend dev",
+    "build": "yarn workspaces run build",
+    "package": "yarn workspaces run package"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
 }
