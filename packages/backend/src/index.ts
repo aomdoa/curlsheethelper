@@ -3,7 +3,6 @@
  */
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 import processCsv, { RawCurlConfig } from './process'
-import { error } from 'node:console'
 
 function response(statusCode: number, body: unknown): APIGatewayProxyResultV2 {
   return {
@@ -29,20 +28,22 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
   }
 
   const path = event.rawPath
-  if (path !== '/process') {
-    return response(404, { message: 'Not Found' })
-  }
   if (event.body === undefined) {
     return response(400, { message: 'Missing request body' })
   }
 
   try {
-    const body = JSON.parse(event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString() : event.body) as RawCurlConfig
-    const result = processCsv(body)
-    return response(200, { result, message: 'data will go here' })
+    const body = JSON.parse(
+      event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString() : event.body
+    ) as RawCurlConfig
+    if (path === '/teams') {
+      const result = processCsv(body)
+      return response(200, { result, message: 'success' })
+    }
+    return response(404, { message: 'Not Found' })
   } catch (err) {
     const error = err as Error
     console.dir(error)
-    return response(400, { message: error.message})
+    return response(400, { message: error.message })
   }
 }
