@@ -1,7 +1,4 @@
-number sheets,6
-number games,21
-teams change,7
-id,experience,wanted position,won't position,must be with,shouldn't be with,can't be with
+id,exp,want_pos,not_pos,with,notwith,mustnotwith
 a01,1,,vice skip,d01
 a02,1,,vice skip
 a03,1,,vice skip

@@ -121,8 +121,10 @@ export default function processCsv(raw: RawCurlConfig): string {
       skipEmptyLines: true,
     }).data as string[][]
   )
-    .filter((row) => row[CSV_COLUMNS.ID] != 'id')
-    .map((row) => {
+    .filter((row) => {
+      const id = row[CSV_COLUMNS.ID]?.trim()
+      return id != 'id' && id != undefined && id.length > 0
+    }).map((row) => {
       return {
         id: row[CSV_COLUMNS.ID],
         experience: parseInt(row[CSV_COLUMNS.EXPERIENCE]) ?? 0,
@@ -133,6 +135,7 @@ export default function processCsv(raw: RawCurlConfig): string {
         mustNotBeWith: parseString(row[CSV_COLUMNS.MUST_NOT_BE_WITH]),
       } as CurlPlayer
     })
+  console.dir(players)
   console.log(`Parsed ${players.length} players from CSV`)
 
   // Today we'll just fail if we have too many or too few players
@@ -197,13 +200,14 @@ export default function processCsv(raw: RawCurlConfig): string {
     team.open--
   }
 
-  let output = 'team,id,experience,wanted_position,dislike_position,must_be_with,shouldnt_be_with,must_not_be_with\n'
+  const order = ['skip', 'vice', 'second', 'lead']
+  let output = 'id,exp,want_pos,not_pos,with,notwith,mustnotwith,team,position\n'
   teamSetup.forEach((team) => {
     const names = [...team.members.values()].map((p) => p.id)
-    team.members.forEach((player) => {
+    ;[...team.members.entries()].sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0])).forEach(([position, player]) => {
       const otherNames = names.filter((n) => n !== player.id)
       player.shouldntBeWith.push(...otherNames)
-      output += `${team.name},${player.id},${player.experience},"${player.wantedPosition.join(' ')}","${player.dislikePosition.join(' ')}","${player.mustBeWith.join(' ')}","${player.shouldntBeWith.join(' ')}","${player.mustNotBeWith.join(' ')}"\n`
+      output += `${player.id},${player.experience},${player.wantedPosition.join(' ')},${player.dislikePosition.join(' ')},${player.mustBeWith.join(' ')},${player.shouldntBeWith.join(' ')},${player.mustNotBeWith.join(' ')},${team.name},${position}\n`
     })
   })
   return output

@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "clean": "yarn workspaces run clean",
-    "dev": "yarn workspace @curlsheethelper/backend dev",
+    "dev": "concurrently -k -n API,WEB -c blue,green \"yarn workspace @curlsheethelper/backend dev\" \"yarn workspace @curlsheethelper/frontend dev\"",
     "build": "yarn workspaces run build",
     "package": "yarn workspaces run package"
   },
